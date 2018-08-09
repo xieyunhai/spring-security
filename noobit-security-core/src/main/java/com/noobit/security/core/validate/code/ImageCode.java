@@ -1,25 +1,22 @@
 package com.noobit.security.core.validate.code;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.awt.image.BufferedImage;
-import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
-public class ImageCode {
+public class ImageCode extends ValidateCode {
     private BufferedImage image;
-    private String code;
-    private LocalDateTime expireTime;
 
     public ImageCode(BufferedImage image, String code, int expireIn) {
+        super(code, expireIn);
         this.image = image;
-        this.code = code;
-        this.expireTime = LocalDateTime.now().plusSeconds(expireIn);
     }
 
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expireTime);
+        return super.isExpired();
     }
 }

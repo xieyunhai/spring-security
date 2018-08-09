@@ -72,7 +72,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers
                         (
                             "/authentication/require",
-                            "/code/image",
+                            "/code/*",
                             "/error",
                             securityProperties.getBrowser().getLoginPage()
                         ).permitAll()
