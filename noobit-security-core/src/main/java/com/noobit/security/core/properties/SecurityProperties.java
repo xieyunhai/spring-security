@@ -10,4 +10,5 @@ public class SecurityProperties {
     // 属性名需要为 browser 与 application.properties 里对应
     private BrowserProperties browser = new BrowserProperties();
 
+    private ValidateCodeProperties code = new ValidateCodeProperties();
 }

@@ -3,12 +3,12 @@ package com.noobit.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.noobit.dto.User;
 import com.noobit.dto.UserQueryCondition;
-import com.noobit.exception.UserNotExistException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+
+    @GetMapping("/me")
+    public Object getCurrentUser(Authentication authentication) {
+        return authentication;
+    }
 
     @DeleteMapping("/{id:\\d+}")
     @JsonView(User.UserSimpleView.class)
