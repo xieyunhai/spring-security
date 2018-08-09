@@ -1,6 +1,8 @@
-package com.noobit.security.core.validate.code;
+package com.noobit.security.core.validate.code.image;
 
 import com.noobit.security.core.properties.SecurityProperties;
+import com.noobit.security.core.validate.code.ValidateCode;
+import com.noobit.security.core.validate.code.ValidateCodeGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.web.bind.ServletRequestUtils;

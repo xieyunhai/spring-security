@@ -1,6 +1,7 @@
 package com.noobit.security.core.validate.code;
 
 import com.noobit.security.core.properties.SecurityProperties;
+import com.noobit.security.core.validate.code.image.ImageCodeGenerator;
 import com.noobit.security.core.validate.code.sms.DefaultSmsCodeSender;
 import com.noobit.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;

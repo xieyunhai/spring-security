@@ -2,11 +2,11 @@ package com.noobit.security.core.validate.code;
 
 import com.noobit.security.core.ValidateCodeException;
 import com.noobit.security.core.properties.SecurityProperties;
+import com.noobit.security.core.validate.code.image.ImageCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -68,7 +67,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY);
+        String key = AbstractValidateCodeProcessor.SESSION_KEY_PREFIX + getProcessorType(request);
+        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(
+                request, key);
         String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
 
         if (StringUtils.isBlank(codeInRequest)) {
@@ -80,13 +81,17 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         }
 
         if (codeInSession.isExpired()) {
-            sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+            sessionStrategy.removeAttribute(request, key);
             throw new ValidateCodeException("验证码已过期");
         }
 
         if (!StringUtils.equals(codeInRequest, codeInSession.getCode())) {
             throw new ValidateCodeException("验证码不匹配");
         }
-        sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+        sessionStrategy.removeAttribute(request, key);
+    }
+
+    private String getProcessorType(ServletWebRequest request) {
+        return StringUtils.substringAfter(request.getRequest().getRequestURI(), "/code/");
     }
 }
