@@ -27,7 +27,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean {
     private SecurityProperties securityProperties;
     private AuthenticationFailureHandler authenticationFailureHandler;
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
@@ -38,11 +38,11 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
         String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(
-                securityProperties.getCode().getImage().getUrl(), ",");
+                securityProperties.getCode().getSms().getUrl(), ",");
         if (configUrls != null) {
             urls.addAll(Arrays.asList(configUrls));
         }
-        urls.add("/authentication/form");
+        urls.add("/authentication/mobile");
     }
 
     @Override
@@ -67,10 +67,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        String key = AbstractValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE";
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(
-                request, key);
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+        String key = AbstractValidateCodeProcessor.SESSION_KEY_PREFIX + "SMS";
+        ValidateCode codeInSession = (ValidateCode) sessionStrategy.getAttribute(request, key);
+        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
 
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("验证码的值不能为空");

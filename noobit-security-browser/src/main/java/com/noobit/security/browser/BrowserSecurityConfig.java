@@ -1,6 +1,8 @@
 package com.noobit.security.browser;
 
+import com.noobit.security.core.authentication.mobild.SmsCodeAuthenticationSecurityConfig;
 import com.noobit.security.core.properties.SecurityProperties;
+import com.noobit.security.core.validate.code.SmsCodeFilter;
 import com.noobit.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource dataSource;
     @Autowired
     private UserDetailsService myUserDetailsService;
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,7 +59,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
         validateCodeFilter.setSecurityProperties(securityProperties);
         validateCodeFilter.afterPropertiesSet();
+
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        smsCodeFilter.afterPropertiesSet();
         http
+            .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin()
                 .loginPage("/authentication/require")
@@ -79,6 +89,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-            .csrf().disable();
+            .csrf().disable()
+            .apply(smsCodeAuthenticationSecurityConfig);
     }
 }
