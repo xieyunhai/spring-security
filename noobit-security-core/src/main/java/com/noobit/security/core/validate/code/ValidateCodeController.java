@@ -12,7 +12,7 @@ import java.util.Map;
 public class ValidateCodeController {
 
     @Autowired
-    private Map<String, ValidateCodeProcessor> validateCodeProcessors;
+    private ValidateCodeProcessorHolder validateCodeProcessorHolder;
 
     /**
      * @author xieyunhai
@@ -26,6 +26,6 @@ public class ValidateCodeController {
      */
     @GetMapping("/code/{type}")
     public void createCode(ServletWebRequest request, @PathVariable String type) throws Exception {
-        validateCodeProcessors.get(type + "CodeProcessor").create(request);
+        validateCodeProcessorHolder.findValidateCodeProcessor(type).create(request);
     }
 }

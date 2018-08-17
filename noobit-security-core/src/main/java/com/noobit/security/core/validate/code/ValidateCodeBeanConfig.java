@@ -14,12 +14,20 @@ public class ValidateCodeBeanConfig {
     @Autowired
     private SecurityProperties securityProperties;
 
+    /**
+     * 图片验证码图片生成器
+     * @return {@link ValidateCodeGenerator}
+     */
     @Bean
-    @ConditionalOnMissingBean(name = "imageCodeGenerator")
-    public ValidateCodeGenerator imageCodeGenerator() {
+    @ConditionalOnMissingBean(name = "imageValidateCodeGenerator")
+    public ValidateCodeGenerator imageValidateCodeGenerator() {
         return new ImageCodeGenerator(securityProperties);
     }
 
+    /**
+     * 短信验证码发送器
+     * @return {@link SmsCodeSender}
+     */
     @Bean
     @ConditionalOnMissingBean(SmsCodeSender.class)
     public SmsCodeSender smsCodeSender() {

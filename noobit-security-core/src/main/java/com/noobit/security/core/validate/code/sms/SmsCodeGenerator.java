@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 @Data
-@Component("smsCodeGenerator")
+@Component("smsValidateCodeGenerator")
 public class SmsCodeGenerator implements ValidateCodeGenerator {
     @Autowired
     private SecurityProperties securityProperties;
