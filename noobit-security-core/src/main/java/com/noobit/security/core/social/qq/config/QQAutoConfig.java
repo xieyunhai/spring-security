@@ -25,9 +25,4 @@ public class QQAutoConfig extends SocialConfigurerAdapter {
         connectionFactoryConfigurer.addConnectionFactory(
                 new QQConnectionFactory(qq.getProviderId(), qq.getAppId(), qq.getAppSecret()));
     }
-
-    @Override
-    public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        return null;
-    }
 }
