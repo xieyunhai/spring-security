@@ -3,7 +3,6 @@ package com.noobit.security.core.validate.code.image;
 import com.noobit.security.core.validate.code.ValidateCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.awt.image.BufferedImage;
 

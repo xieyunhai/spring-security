@@ -50,7 +50,7 @@ public class SocialConfig extends SocialConfigurerAdapter {
     public SpringSocialConfigurer noobitSocialSecurityConfig() {
         String filterProcessesUrl = securityProperties.getSocial().getFilterProcessesUrl();
         NoobitSpringSocialConfigurer configurer = new NoobitSpringSocialConfigurer(filterProcessesUrl);
-        configurer.signupUrl(securityProperties.getBrowser().getSignupUrl());
+        configurer.signupUrl(securityProperties.getBrowser().getSignUpUrl());
         return configurer;
     }
 

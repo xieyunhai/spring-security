@@ -1,5 +1,6 @@
 package com.noobit.security.browser;
 
+import com.noobit.security.browser.session.NoobitExpiredSessionStrategy;
 import com.noobit.security.core.authentication.AbstractChannelSecurityConfig;
 import com.noobit.security.core.authentication.mobild.SmsCodeAuthenticationSecurityConfig;
 import com.noobit.security.core.properties.SecurityConstants;
@@ -13,8 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -35,6 +39,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
     @Autowired
     private SpringSocialConfigurer noobitSpringSocialConfigurer;
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -63,6 +73,17 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
                 .userDetailsService(myUserDetailsService)
                 .and()
+            .sessionManagement()
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                .and()
+                .and()
+            .logout()
+                .logoutSuccessUrl("/signOut")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                .deleteCookies("JSESSIONID")
+                .and()
             .authorizeRequests()
                 .antMatchers
                         (
@@ -70,7 +91,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                             SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                             SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
                             securityProperties.getBrowser().getLoginPage(),
-                            securityProperties.getBrowser().getSignupUrl(),
+                            securityProperties.getBrowser().getSignUpUrl(),
+//                            securityProperties.getBrowser().getSignOutUrl(),
+                            securityProperties.getBrowser().getSession().getSessionInvalidUrl(),
                             "/user/register"
                         ).permitAll()
                 .anyRequest()

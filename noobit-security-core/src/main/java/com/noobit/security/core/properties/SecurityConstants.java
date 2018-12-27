@@ -21,4 +21,8 @@ public class SecurityConstants {
     public final static String DEFAULT_PARAMETER_NAME_CODE_SMS = "smsCode";
     /* 发送短信验证码 或 验证短信验证码时, 传递手机号的参数的名称 */
     public final static String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
+
+    /* session 失效默认的跳转地址 */
+    public static final String DEFAULT_SESSION_INVALID_URL = "/default-session-invalid.html";
+    public static final String DEFAULT_SIGN_IN_PAGE_URL = "/default-login.html";
 }

@@ -19,9 +19,15 @@
             <version>${noobit.security.version}</version>
         </dependency>
 
+        <!-- spring boot 2.0 + spring session -->
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
